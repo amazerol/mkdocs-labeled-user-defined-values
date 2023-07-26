@@ -12,9 +12,6 @@ class UserDefinedValues(BasePlugin):
     def on_config(self, config, **kwards):
         self.keywords = {}
 
-        # {'cat1': {'KW_ALLOWEDIP': {'label': "adresses ou plage d'IP autorisées à être jointe par le client (, pour la séparation)", 'placeholder': 'e.g. 10.11.0.253,10.100.2.1,10.12.0.0/16'}}, 'cat2': {'KW_VMBR': {'label': 'vlan bridge number (=vmbr)', 'placeholder': 'e.g. 111'}}}
-
-
         # Sanatise all keywords to be Dictionary. By default MkDocs assigns None as a value for Keys if they are empty
         for key, value in self.config['keywords'].items():
             self.keywords[key] = value if isinstance(value, dict) else {}
@@ -27,10 +24,7 @@ class UserDefinedValues(BasePlugin):
         return config
 
     def on_post_page(self, output_content, page, config):
-        data_tag = 'data-bind-user-defined-values'
-
-        f = open("/home/exploit/mkdocs/devdocs/docs/keywords.html", "a")
-            
+        data_tag = 'data-bind-user-defined-values'            
 
         asked_cat = None
         for asked_placeholder in self.placeholdered_categories:
@@ -41,13 +35,9 @@ class UserDefinedValues(BasePlugin):
 
 
         if asked_cat is not None:
-            f.write(asked_cat + " ---------- " + str(self.keywords)+ "***\n")
             try:
                 self.keywords = self.keywords.pop(asked_cat)
             except: pass
-
-
-        f.close()
 
         # Wrap keyword with span and data tag
         for keyword in self.keywords:
