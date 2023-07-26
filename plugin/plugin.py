@@ -2,37 +2,59 @@ from mkdocs import utils as mkdocs_utils
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
-
 class UserDefinedValues(BasePlugin):
 
     config_scheme = (
-        ("keywords", config_options.Type(dict)),
-        (
-            "input-placeholder",
-            config_options.Type(str, default="{{{user-defined-values}}}"),
-        ),
+        ('keywords', config_options.Type(dict)),
+        ('input-placeholder', config_options.Type(str, default='{{{user-defined-values}}}'))
     )
 
     def on_config(self, config, **kwards):
         self.keywords = {}
 
+        # {'cat1': {'KW_ALLOWEDIP': {'label': "adresses ou plage d'IP autorisées à être jointe par le client (, pour la séparation)", 'placeholder': 'e.g. 10.11.0.253,10.100.2.1,10.12.0.0/16'}}, 'cat2': {'KW_VMBR': {'label': 'vlan bridge number (=vmbr)', 'placeholder': 'e.g. 111'}}}
+
+
         # Sanatise all keywords to be Dictionary. By default MkDocs assigns None as a value for Keys if they are empty
-        for key, value in self.config["keywords"].items():
+        for key, value in self.config['keywords'].items():
             self.keywords[key] = value if isinstance(value, dict) else {}
+        
+
+        self.categories = [key for key, value in self.keywords.items()]
+        self.placeholdered_categories = [self.config['input-placeholder'].strip("}}}") + "." + cat + "}}}" for cat in self.categories]
+
 
         return config
 
     def on_post_page(self, output_content, page, config):
-        data_tag = "data-bind-user-defined-values"
+        data_tag = 'data-bind-user-defined-values'
+
+        f = open("/home/exploit/mkdocs/devdocs/docs/keywords.html", "a")
+            
+
+        asked_cat = None
+        for asked_placeholder in self.placeholdered_categories:
+            if asked_placeholder in output_content:
+                asked_cat: str = asked_placeholder.strip("}}}").strip("{{{").split(".")[1]
+
+        mem_keywords = self.keywords
+
+
+        if asked_cat is not None:
+            f.write(asked_cat + " ---------- " + str(self.keywords)+ "***\n")
+            try:
+                self.keywords = self.keywords.pop(asked_cat)
+            except: pass
+
+
+        f.close()
 
         # Wrap keyword with span and data tag
         for keyword in self.keywords:
-            output_content = output_content.replace(
-                keyword, f'<span {data_tag}="{keyword}">{keyword}</span>'
-            )
+            output_content = output_content.replace(keyword, f'<span {data_tag}="{keyword}">{keyword}</span>')
 
         # Embed binding javascript
-        input_boxes = """
+        input_boxes = '''
         <style>
             label.user-defined-values {
                 width: 30%
@@ -47,18 +69,18 @@ class UserDefinedValues(BasePlugin):
                 display: inline-block;
             }
         </style>
-        """
+        '''
 
         for keyword, values in self.keywords.items():
             javascript_variable_name = keyword.lower().replace("-", "_")
             label = keyword
-            placeholder = ""
+            placeholder = ''
 
             if values:
-                label = values.get("label", label)
-                placeholder = values.get("placeholder", placeholder)
+                label = values.get('label', label)
+                placeholder = values.get('placeholder', placeholder)
 
-            input_boxes += f"""
+            input_boxes += f'''
                 <label class="user-defined-values" for="{keyword}">{label}</label>
                 <input class="user-defined-values" type="text" placeholder="{placeholder}" id="{keyword}" />
                 <script>
@@ -76,10 +98,12 @@ class UserDefinedValues(BasePlugin):
                         }});
                     }};
                 </script>
-            """
+            '''
+        if asked_cat is not None:
+            output_content = output_content.replace(self.config['input-placeholder'].strip("}}}") + "." + asked_cat + "}}}", input_boxes)
+        else:
+            output_content = output_content.replace(self.config['input-placeholder'], input_boxes)
 
-        output_content = output_content.replace(
-            self.config["input-placeholder"], input_boxes
-        )
+        self.keywords = mem_keywords
 
         return output_content
