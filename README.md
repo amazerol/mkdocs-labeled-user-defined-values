@@ -15,7 +15,7 @@ Activate the plugin in `mkdocs.yml`:
 ```yaml
 plugins:
   - search
-  - user-defined-values:
+  - labeled-user-defined-values:
       input-placeholder: "{{{user-defined-values}}}"
       keywords:
         cat1:
