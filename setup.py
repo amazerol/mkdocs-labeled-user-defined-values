@@ -9,12 +9,12 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="mkdocs-multiple-user-defined-values",
-    version="1.0.1",
-    description="Enable user defined values for MkDocs",
+    name="mkdocs-labeled-user-defined-values",
+    version="1.0.5",
+    description="An enhanced version of mkdocs-user-defined-values. Keywords can now be categorized.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/amazerol/mkdocs-multiple-user-defined-values",
+    url="https://github.com/amazerol/mkdocs-labeled-user-defined-values",
     author="Alban MAZEROLLES",
     classifiers=[
         "Intended Audience :: Developers",
@@ -32,10 +32,10 @@ setup(
     extras_require={"dev": ["pipenv-setup", "pylint", "black", "pytest",]},
     dependency_links=[],
     entry_points={
-        "mkdocs.plugins": ["user-defined-values = plugin.plugin:UserDefinedValues",]
+        "mkdocs.plugins": ["labeled-user-defined-values = mkdocs_labeled_user_defined_values.plugin:LabeledUserDefinedValues",]
     },
     project_urls={
-        "Bug Reports": "https://github.com/amazerol/mkdocs-user-defined-values/issues",
-        "Source": "https://github.com/amazerol/mkdocs-user-defined-values/",
+        "Bug Reports": "https://github.com/amazerol/mkdocs-labeled-user-defined-values/issues",
+        "Source": "https://github.com/amazerol/mkdocs-labeled-user-defined-values/",
     },
 )

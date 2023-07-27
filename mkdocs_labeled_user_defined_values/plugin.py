@@ -2,7 +2,8 @@ from mkdocs import utils as mkdocs_utils
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
-class UserDefinedValues(BasePlugin):
+
+class LabeledUserDefinedValues(BasePlugin):
 
     config_scheme = (
         ('keywords', config_options.Type(dict)),
