@@ -1,8 +1,8 @@
-# mkdocs-multiple-user-defined-valuesf
+# mkdocs-labeled-user-defined-values
 
 This is a plugin for a MkDocs which allows pages to have user defined input values.
 
-The difference with the original mkdocs-user-defined-values is the capability to create blocks of keywords (you don't necessarily want to display the form with ALL inputs)
+The difference with the original mkdocs-user-defined-values is the capability to categorize keywords.
 
 ## Setup
 
