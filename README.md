@@ -1,4 +1,4 @@
-# mkdocs-multiple-user-defined-values
+# mkdocs-multiple-user-defined-valuesf
 
 This is a plugin for a MkDocs which allows pages to have user defined input values.
 
